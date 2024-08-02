@@ -12,17 +12,17 @@ const UserSchema = new mongoose.Schema({
   lastName: { type: String },
   nif: { type: String },
   citizenCard: { type: String },
-  profileImage: { type: String },
+  id:{type:String},
+  profileImage: { type: Buffer },
   professionalTitle: { type: String },
   description: { type: String },
   hourlyRate: { type: Number },
   categories: { type: [String] },
-  subcategories: { type: [[String]] }, // Array of arrays
+  subcategories: { type: [[String]] },
   // Fields for client
-  id: { type: String },
   profileTitle: { type: String },
   // Fields for tracking experience
-  experienceLevel: { type: String, default: 'Beginner' }, // "Beginner", "Intermediate", etc.
+  experienceLevel: { type: String, default: 'Beginner' },
   completedProjects: { type: Number, default: 0 },
 });
 

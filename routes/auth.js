@@ -1,7 +1,10 @@
 const express = require('express');
 const multer = require('multer');
+const bcrypt = require('bcrypt');
 const router = express.Router();
-const User = require('../models/User'); // Assuming you have a User model set up
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+
 
 // Configure multer
 const storage = multer.memoryStorage();
@@ -17,7 +20,7 @@ router.post('/register/client', upload.single('profileImage'), async (req, res) 
       password,
       firstName,
       lastName,
-      nif,
+      id,
       dateOfBirth,
       address,
       phoneNumber,
@@ -27,7 +30,7 @@ router.post('/register/client', upload.single('profileImage'), async (req, res) 
     const profileImage = req.file;
 
     // Validate required fields
-    if (!email || !password || !firstName || !lastName || !nif || !dateOfBirth || !address || !phoneNumber) {
+    if (!email || !password || !firstName || !lastName || !id || !dateOfBirth || !address || !phoneNumber) {
       console.log('Missing required fields:', req.body);
       return res.status(400).json({ message: 'All fields are required' });
     }
@@ -39,13 +42,16 @@ router.post('/register/client', upload.single('profileImage'), async (req, res) 
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Create new user
     const user = new User({
       email,
-      password, // In a real app, make sure to hash the password
+      password: hashedPassword, // Save the hashed password
       firstName,
       lastName,
-      nif,
+      id,
       dateOfBirth,
       address,
       phoneNumber,
@@ -100,10 +106,13 @@ router.post('/register/freelancer', upload.single('profileImage'), async (req, r
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Create new user
     const user = new User({
       email,
-      password, // In a real app, make sure to hash the password
+      password: hashedPassword, // Save the hashed password
       firstName,
       lastName,
       nif,
@@ -128,5 +137,40 @@ router.post('/register/freelancer', upload.single('profileImage'), async (req, r
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
+
+
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    console.log('Login attempt:', { email, password });
+  
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        console.log('User not found:', email);
+        return res.status(400).json({ success: false, message: 'Invalid email or password' });
+      }
+  
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        console.log('Invalid password for user:', email);
+        return res.status(400).json({ success: false, message: 'Invalid email or password' });
+      }
+  
+      // Ensure that JWT_SECRET is loaded
+      const secret = process.env.JWT_SECRET;
+      if (!secret) {
+        console.error('JWT_SECRET is not defined');
+        return res.status(500).json({ success: false, message: 'Server error' });
+      }
+  
+      const token = jwt.sign({ userId: user._id }, secret, { expiresIn: '1h' });
+      console.log('Login successful for user:', email);
+  
+      res.json({ success: true, message: 'Login successful', token });
+    } catch (error) {
+      console.error('Error during login:', error);
+      res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+  });
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('../models/User');
-const { getExperienceLevel } = require('../Utils/experienceLevels'); // Ensure this path matches the directory casing exactly
+const { getExperienceLevel } = require('../Utils/experienceLevels');
 const router = express.Router();
 
 router.post('/purchase-level-package', async (req, res) => {

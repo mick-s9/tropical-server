@@ -1,4 +1,4 @@
-require('dotenv').config(); // Ensure this is at the top
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -12,7 +12,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Log the MongoDB URI to verify it's loaded correctly
 console.log('MONGODB_URI:', process.env.MONGODB_URI);
 
 // Connect to MongoDB
