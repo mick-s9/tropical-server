@@ -4,7 +4,7 @@ const { getExperienceLevel } = require('../Utils/experienceLevels');
 const router = express.Router();
 
 router.post('/purchase-level-package', async (req, res) => {
-  const { userId, packageType } = req.body; // Assume packageType can be "Intermediate", "Specialist", etc.
+  const { userId, packageType } = req.body;
 
   try {
     const user = await User.findById(userId);
