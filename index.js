@@ -9,7 +9,9 @@ const purchaseRoutes = require('./routes/purchases');
 
 const app = express();
 
+// Configura CORS per permettere richieste da tutte le origini
 app.use(cors());
+
 app.use(express.json());
 
 console.log('MONGODB_URI:', process.env.MONGODB_URI);
