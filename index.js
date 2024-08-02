@@ -11,6 +11,7 @@ const app = express();
 
 // Configura CORS per permettere richieste da tutte le origini
 app.use(cors());
+app.options('*', cors()); // Abilita CORS per tutte le route e per le richieste preflight
 
 app.use(express.json());
 
