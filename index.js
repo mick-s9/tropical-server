@@ -9,17 +9,16 @@ const purchaseRoutes = require('./routes/purchases');
 
 const app = express();
 
-// Configura CORS per permettere richieste da tutte le origini
+
 app.use(cors());
-app.options('*', cors()); // Abilita CORS per tutte le route e per le richieste preflight
+app.options('*', cors());
 
 app.use(express.json());
 
 console.log('MONGODB_URI:', process.env.MONGODB_URI);
 
-
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
