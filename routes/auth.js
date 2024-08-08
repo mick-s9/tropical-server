@@ -111,7 +111,7 @@ async function sendPasswordResetEmail(email, token) {
     to: email,
     from: process.env.EMAIL_USER, // This should be a verified email on SendGrid
     subject: 'Password Reset',
-    text: `Click the link to reset your password: http://yourdomain.com/reset-password?token=${token}`,
+    text: `Click the link to reset your password: https://tropical-server-9435d6950866.herokuapp.com/reset-password?token=${token}`,
   };
 
   try {
